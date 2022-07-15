@@ -1,5 +1,12 @@
 import { useQuery } from "react-query";
-import { useLocation, useParams, Routes, Route, useMatch } from "react-router";
+import {
+  useLocation,
+  useParams,
+  Routes,
+  Route,
+  useMatch,
+  useNavigate,
+} from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
@@ -21,6 +28,7 @@ const Header = styled.header`
 `;
 
 const Title = styled.h1`
+  margin-left: 10px;
   font-size: 40px;
   color: ${(props) => props.theme.accentColor};
 `;
@@ -99,7 +107,7 @@ interface InfoData {
   last_data_at: string;
 }
 
-interface TickersData {
+export interface TickersData {
   id: string;
   name: string;
   symbol: string;
@@ -135,6 +143,7 @@ function Coin() {
   const { state } = useLocation() as RouteState;
   const priceMatch = useMatch("/:coinId/price");
   const chartMatch = useMatch("/:coinId/chart");
+  const navigate = useNavigate();
   const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
     ["info", coinId],
     () => fetchCoinInfo(coinId!)
@@ -147,6 +156,9 @@ function Coin() {
         refetchInterval: 5000,
       }
     );
+  const backClick = () => {
+    return navigate(-1);
+  };
   const loading = infoLoading || tickersLoading;
   return (
     <Container>
@@ -154,6 +166,7 @@ function Coin() {
         <title>{state ? state : loading ? "Loading..." : infoData?.name}</title>
       </Helmet>
       <Header>
+        <button onClick={backClick}>◀</button>
         <Title>{state ? state : loading ? "Loading..." : infoData?.name}</Title>
       </Header>
       {loading ? (
@@ -196,7 +209,7 @@ function Coin() {
 
           <Routes>
             <Route path={"chart"} element={<Chart coinId={coinId!} />} />
-            <Route path={"price"} element={<Price />} />
+            <Route path={"price"} element={<Price coinId={coinId!} />} />
           </Routes>
         </>
       )}

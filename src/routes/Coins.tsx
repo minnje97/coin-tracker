@@ -13,8 +13,9 @@ const Container = styled.div`
 `;
 
 const Header = styled.header`
-  height: 10vh;
+  height: 20vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
@@ -56,6 +57,16 @@ const Img = styled.img`
   margin-right: 10px;
 `;
 
+const ToggleBtn = styled.button`
+  border-style: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  background-color: ${(props) => props.theme.accentColor};
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+`;
+
 interface ICoin {
   id: string;
   name: string;
@@ -77,7 +88,7 @@ function Coins() {
       </Helmet>
       <Header>
         <Title>Coin</Title>
-        <button onClick={toggleDarkAtom}>Toggle Mode</button>
+        <ToggleBtn onClick={toggleDarkAtom}>Toggle Mode</ToggleBtn>
       </Header>
       {isLoading ? (
         <Loader>Loading...</Loader>

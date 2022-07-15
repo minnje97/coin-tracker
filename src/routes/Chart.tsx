@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import { fetchCoinHistory } from "../api";
-import ApexChart from "react-apexcharts";
+import ReactApexChart from "react-apexcharts";
 import { useRecoilValue } from "recoil";
 import { isDarkAtom } from "../atoms";
 
@@ -31,57 +31,28 @@ function Chart({ coinId }: ChartProps) {
       {isLoading ? (
         "Loading Chart..."
       ) : (
-        <ApexChart
-          type="line"
+        <ReactApexChart
+          type="candlestick"
           series={[
             {
-              name: "Price",
-              data: data?.map((price) => price.close) as number[],
+              data: [
+                {
+                  x: new Date(),
+                  y: data?.map((price) => [
+                    price.open,
+                    price.high,
+                    price.low,
+                    price.close,
+                  ]),
+                },
+              ],
             },
           ]}
           options={{
-            colors: ["#f39c12"],
-            fill: {
-              type: "gradient",
-              gradient: { gradientToColors: ["#1abc9c"], stops: [0, 100] },
-            },
-            yaxis: {
-              show: false,
-            },
-            xaxis: {
-              labels: {
-                show: false,
-              },
-              axisTicks: {
-                show: false,
-              },
-              axisBorder: {
-                show: false,
-              },
-              type: "datetime",
-              categories: data?.map((data) => data.time_close),
-            },
-            grid: {
-              show: false,
-            },
-            theme: {
-              mode: isDark ? "dark" : "light",
-            },
             chart: {
-              height: 400,
-              width: 500,
-              toolbar: {
-                show: false,
-              },
-              background: "transparent",
-            },
-            stroke: { curve: "smooth", width: 5 },
-            tooltip: {
-              y: {
-                formatter: (value) => {
-                  return `$${value.toFixed(2)}`;
-                },
-              },
+              type: "candlestick",
+              height: 350,
+              width: 600,
             },
           }}
         />
