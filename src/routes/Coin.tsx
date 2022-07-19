@@ -7,7 +7,7 @@ import {
   useMatch,
   useNavigate,
 } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
 import Chart from "./Chart";
@@ -41,7 +41,7 @@ const Loader = styled.span`
 const Overview = styled.div`
   display: flex;
   justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.3);
   padding: 10px 20px;
   border-radius: 10px;
 `;
@@ -71,12 +71,12 @@ const Tab = styled.span<{ isActive: boolean }>`
   text-align: center;
   text-transform: uppercase;
   font-size: 12px;
-  font-weight: 400;
-  background-color: rgba(0, 0, 0, 0.5);
+  font-weight: ${(props) => (props.isActive ? 600 : 400)};
+  background-color: ${(props) =>
+    props.isActive ? props.theme.accentColor : props.theme.bgColor};
   padding: 7px 0px;
   border-radius: 10px;
-  color: ${(props) =>
-    props.isActive ? props.theme.accentColor : props.theme.textColor};
+  color: ${(props) => props.theme.textColor};
   a {
     display: block;
   }
@@ -141,8 +141,8 @@ export interface TickersData {
 function Coin() {
   const { coinId } = useParams<{ coinId: string }>();
   const { state } = useLocation() as RouteState;
-  const priceMatch = useMatch("/:coinId/price");
-  const chartMatch = useMatch("/:coinId/chart");
+  const priceMatch = useMatch(`${process.env.PUBLIC_URL}/${coinId}/price`);
+  const chartMatch = useMatch(`${process.env.PUBLIC_URL}/${coinId}/chart`);
   const navigate = useNavigate();
   const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
     ["info", coinId],
@@ -200,10 +200,14 @@ function Coin() {
           </Overview>
           <Tabs>
             <Tab isActive={chartMatch !== null}>
-              <Link to={`/${coinId}/chart`}>Chart</Link>
+              <Link to={`${process.env.PUBLIC_URL}/${coinId}/chart`}>
+                Chart
+              </Link>
             </Tab>
             <Tab isActive={priceMatch !== null}>
-              <Link to={`/${coinId}/price`}>Price</Link>
+              <Link to={`${process.env.PUBLIC_URL}/${coinId}/price`}>
+                Price
+              </Link>
             </Tab>
           </Tabs>
 
